@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<terrenos>    
+        <dimension>
+            <m>5</m>
+            <n>5</n>
+        </dimension>
+        <posicioninicio>
+            <x>1</x>
+            <y>1</y>
+        </posicioninicio>
+</terrenos>
