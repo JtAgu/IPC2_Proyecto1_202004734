@@ -18,23 +18,24 @@ def imprimir():
     print("6. salir\n")
 Lista=Listas()
 def Leer(ruta):
-    #C:\Users\justin\Downloads\terrenos.xml
+    #C:\Users\justin\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\IPC2_Proyecto1_202003734\prueba.xml
+    #C:/Users/justin/Desktop/USAC/Semestre 2 2021/IPC 2/Lab/IPC2_Proyecto1_202003734/IPC2_Proyecto1_202004734/salida.xml
+    #C:\Users\justin\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\IPC2_Proyecto1_202003734\IPC2_Proyecto1_202004734\prueba1.xml
     mytree = ET.parse(ruta)
     myroot = mytree.getroot()
-    c=int(0)
+    
     for x in myroot.findall('terreno'):
-        print(x.attrib["nombre"])
-        print("inicio en: " +x[1][0].text+" , "+ x[1][1].text)
-        print("finalizo en: " +x[2][0].text+" , "+ x[2][1].text)
-        Lista.AñadirTerreno(x.attrib["nombre"], x[0][0].text, x[0][1].text, x[1][0].text, x[1][1].text, x[2][0].text, x[2][1].text)
 
+        
+        Lista.AñadirTerreno(x.attrib["nombre"], x[0][0].text, x[0][1].text, x[1][0].text, x[1][1].text, x[2][0].text, x[2][1].text)
+        c=int(1)
         for terreno in x.findall('posicion'):
-            c+=1
             equis=str(terreno.attrib["x"])
             yes=str(terreno.attrib["y"])
-            gas=terreno.text                    
-            Lista.AñadirPosiciones(x.attrib["nombre"],gas,equis,yes,c,x[0][0].text)
-        c=int(0)
+            gas=terreno.text
+            Lista.AñadirPosiciones(x.attrib["nombre"],gas,equis,yes,c,x[0][1].text)
+            c+=1
+
     Lista.recorrer()
     return myroot
 
@@ -48,7 +49,7 @@ def Xml(myroot):
     nombre=input("Escribe el nombre del terreno a procesar:\n")
     for x in myroot.findall('terreno'):
         if str(x.attrib["nombre"])==nombre:
-            Lista.BuscarInicio(nombre)
+            Lista.imprimirXML(nombre)
             break
 
 
@@ -67,16 +68,9 @@ if __name__ == '__main__':
             procesar(arbol)
         elif opcion==3:
             Xml(arbol)
-            
-            
         elif opcion==5:
-
-            ruta =input("Ingresa la ruta del archivo:")
-            mytree = ET.parse(ruta)
-            myroot = mytree.getroot()
-            c=int(0)
-            for x in myroot.findall('terreno'):
-                print(x[0][0].tag)
+            n=input("Ingrese el nombre del terreno:\n")
+            Lista.Grafico(n)
         elif opcion==4:
             print("Justin Josue Aguirre Román\n202004734\nIntrucción a la Programación y Computación 2 sección A\nIngenieria en Ciencias y Systemas\n4to Semestre")
         elif opcion==6:

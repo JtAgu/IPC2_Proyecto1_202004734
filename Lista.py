@@ -1,6 +1,7 @@
 from Nodo import Nodos
 from Nodo import NodoTerreno
-import xml.etree.ElementTree as ET
+import os,sys
+import xml.etree.cElementTree as ET
 class Listas:
     def __init__(self):
         self.First=None
@@ -80,6 +81,7 @@ class Listas:
                 nodo=nodo.Next
             print("--------------------------------------")
             aux=aux.Next
+        
 
     def BuscarInicio(self,nombre):
         aux=self.First
@@ -88,14 +90,15 @@ class Listas:
         Actual=aux.Nodo1
         print(aux.YInicio)
         print(aux.Xinicio)
-        if Actual.Y<aux.YInicio:
+        aux.Analizado=True
+        if Actual.X<aux.YInicio:
             while Actual.X!=aux.Xinicio or Actual.Y!=aux.YInicio:
                 Actual=Actual.Next
-        elif Actual.Y>aux.YInicio:
+        elif Actual.X>aux.YInicio:
             while Actual.X!=aux.Xinicio or Actual.Y!=aux.YInicio:
                 Actual=Actual.Anterior
         else:
-            if Actual.X>aux.Xinicio:
+            if Actual.Y>aux.Xinicio:
                 while Actual.X!=aux.Xinicio or Actual.Y!=aux.YInicio:
                     Actual=Actual.Anterior
             else:
@@ -104,41 +107,51 @@ class Listas:
         #Recorrido de izquierda-Arriba hacia Abajo-Derecha
         print("Empece en: "+ Actual.X+" - "+Actual.Y)
         Actual.Camino=True
+        aux.combustible+=Actual.Value
         if Actual.Y<aux.Yfinal and (Actual.X<aux.Xfinal):
             while (Actual.Y!=aux.Yfinal) and (Actual.X!=aux.Xfinal):
                 
                 if Actual.Abajo.Value<=Actual.Sig.Value:
                     Actual=Actual.Abajo
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
                 else:
                     Actual=Actual.Sig
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
             if Actual.Y==aux.Yfinal:
                 while Actual.X!=aux.Xfinal:
-                    Actual=Actual.Sig
-                    Actual.Camino=True
-            elif Actual.X==aux.Xfinal:
-                while Actual.Y!=aux.Yfinal:
                     Actual=Actual.Abajo
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
+            elif Actual.X==aux.Xfinal:
+                while Actual.Y!=aux.Yfinal:
+                    Actual=Actual.Sig
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
 
         #Recorrido de Abajo-Izquierda hacia Arriba-Derecha
-        elif (Actual.Y>aux.Yfinal) and (Actual.X<aux.Xfinal):
+        elif (Actual.Y<aux.Yfinal) and (Actual.X>aux.Xfinal):
             while (Actual.Y!=aux.Yfinal) and (Actual.X!=aux.Xfinal):
                 if Actual.Arriba.Value<=Actual.Sig.Value:
                     Actual=Actual.Arriba
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
                 else:
                     Actual=Actual.Sig
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
+
             if Actual.Y==aux.Yfinal:
                 while Actual.X!=aux.Xfinal:
-                    Actual=Actual.Sig
-                    Actual.Camino=True
-            elif Actual.X==aux.Xfinal:
-                while Actual.Y!=aux.Yfinal:
                     Actual=Actual.Arriba
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
+            elif Actual.X==aux.Xfinal:
+                while Actual.Y!=aux.Yfinal:
+                    Actual=Actual.Sig
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
 
         #Recorrido de Derecha-Abajo hacia Arriba-Izquierda
         elif Actual.Y>aux.Yfinal and (Actual.X>aux.Xfinal):
@@ -147,54 +160,68 @@ class Listas:
                 if Actual.Arriba.Value<=Actual.Anterior.Value:
                     Actual=Actual.Arriba
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
                 else:
                     Actual=Actual.Anterior
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
             if Actual.Y==aux.Yfinal:
                 while Actual.X!=aux.Xfinal:
-                    Actual=Actual.Anterior
-                    Actual.Camino=True
-            elif Actual.X==aux.Xfinal:
-                while Actual.Y!=aux.Yfinal:
                     Actual=Actual.Arriba
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
+            elif Actual.X==aux.Xfinal:
+                while Actual.Y!=aux.Yfinal:
+                    Actual=Actual.Anterior
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
                     
         #Recorrido de Derecha-Arriba hacia Izquierda-abajo
-        elif (Actual.Y<aux.Yfinal) and (Actual.X>aux.Xfinal):
+        elif (Actual.Y>aux.Yfinal) and (Actual.X<aux.Xfinal):
             while (Actual.Y!=aux.Yfinal) and (Actual.X!=aux.Xfinal):
                 print("Estoy en: "+ Actual.X+" - "+Actual.Y)
                 if Actual.Abajo.Value<=Actual.Anterior.Value:
                     Actual=Actual.Abajo
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
                 else:
                     Actual=Actual.Anterior
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
             if Actual.Y==aux.Yfinal:
                 while Actual.X!=aux.Xfinal:
-                    Actual=Actual.Anterior
+                    Actual=Actual.Abajo
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
             elif Actual.X==aux.Xfinal:
                 while Actual.Y!=aux.Yfinal:
-                    Actual=Actual.Abajo
-                    Actual.Camino=True
-        elif (Actual.Y!=aux.Yfinal) or (Actual.X==aux.Xfinal):
-            if Actual.Y>aux.Yfinal:
-                while Actual.Y!=aux.Yfinal:
-                    Actual=Actual.Abajo
-                    Actual.Camino=True
-            elif Actual.Y<aux.Yfinal:
-                while Actual.Y!=aux.Yfinal:
-                    Actual=Actual.Arriba
-                    Actual.Camino=True
-        elif (Actual.Y==aux.Yfinal) or (Actual.X!=aux.Xfinal):
-            if Actual.X>aux.Xfinal:
-                while Actual.X!=aux.Xfinal:
                     Actual=Actual.Anterior
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
+
+
+        elif (Actual.X!=aux.Yfinal) or (Actual.Y==aux.Yfinal):
+            if Actual.X>aux.Xfinal:
+                while Actual.X!=aux.Xfinal:
+                    Actual=Actual.Abajo
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
             elif Actual.X<aux.Xfinal:
                 while Actual.X!=aux.Xfinal:
+                    Actual=Actual.Arriba
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
+        elif (Actual.X==aux.Xfinal) or (Actual.Y!=aux.Yfinal):
+            if Actual.Y>aux.Yfinal:
+                while Actual.Y!=aux.Yfinal:
+                    Actual=Actual.Anterior
+                    Actual.Camino=True
+                    aux.combustible+=Actual.Value
+            elif Actual.Y<aux.Yfinal:
+                while Actual.Y!=aux.Yfinal:
                     Actual=Actual.Next
                     Actual.Camino=True
+                    aux.combustible+=Actual.Value
         
         print("Estoy en: "+ Actual.X+" - "+Actual.Y)
         Actual=aux.Nodo1
@@ -204,7 +231,7 @@ class Listas:
                 impresion+="[1] "
             else:
                 impresion+="[0] "
-            if Actual.Id%int(aux.Xdimension)==0:
+            if Actual.Id%int(aux.Ydimension)==0:
                 impresion+="\n"
             Actual=Actual.Next
         print(impresion)
@@ -213,24 +240,50 @@ class Listas:
         aux=self.First
         while aux.nombre!=nombre:
             aux=aux.Next
-        ruut=ET.Element("terreno",name=nombre)
-        posicionIni=ET.SubElement("posicioninicio")
-        ET.SubElement(posicionIni,"x").text=aux.Xinicio
-        ET.SubElement(posicionIni,"y").text=aux.YInicio
-        posicionFin=ET.SubElement("posicioninicio")
-        ET.SubElement(posicionFin,"x").text=aux.Xfinal
-        ET.SubElement(posicionFin,"y").text=aux.Yfinal
-        palabra="neoijfi3jpofe3k"
+        if aux.Analizado==True:
+            ruut=ET.Element("terreno ",name=nombre)
+            posicionIni=ET.SubElement(ruut,"posicioninicio")
+            ET.SubElement(posicionIni,"x").text=str(aux.Xinicio)
+            ET.SubElement(posicionIni,"y").text=str(aux.YInicio)
+            posicionFin=ET.SubElement(ruut,"posicionfinal")
+            ET.SubElement(posicionFin,"x").text=str(aux.Xfinal)
+            ET.SubElement(posicionFin,"y").text=str(aux.Yfinal)
+            gas=ET.SubElement(ruut,"gasolina")
+            gas.text=str(aux.combustible)
+            Actual=aux.Nodo1
+            while Actual:
+                if Actual.Camino==True:
+                    nodo1=ET.SubElement(ruut,"posicion",x=str(Actual.X),y=str(Actual.Y))
+                    nodo1.text=str(Actual.Value)
+                Actual=Actual.Next
+            arbol=ET.ElementTree(ruut)
+            ruta=input("Ingrese la ruta:")            
+            try:
+                arbol.write(ruta)
+            except IOError as exc:
+                print(exc)
+        else:
+            print("No ha seleccionado un terreno analizado...")
+            
+            
+    def Grafico(self,nombre):
+        aux=self.First
+        while aux.nombre!=nombre:
+            aux=aux.Next
+        archivo=open("C:/Users/justin/Desktop/USAC/Semestre 2 2021/IPC 2/Lab/IPC2_Proyecto1_202003734/IPC2_Proyecto1_202004734/"+aux.nombre+".dot","w")
+        archivo.write("digraph "+aux.nombre+"{\n")
         Actual=aux.Nodo1
         while Actual:
-            nodo1=ET.SubElement(doc,"nodo1",name=x)
-            nodo1.text=x
+            if Actual.Camino==True:
+                archivo.write(str(Actual.Id)+"[color=blue label="+str(Actual.Value)+"]\n")
+            else:
+                archivo.write(str(Actual.Id)+"[label="+str(Actual.Value)+"]\n")
             Actual=Actual.Next
-        arbol=ET.ElementTree(ruut)
-        ruta=input("Ingrese la ruta:\n")
-            #C:\Users\justin\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\IPC2_Proyecto1_202003734\IPC2_Proyecto1_202004734\prueba.xml
-        arbol.write(ruta)
-        
+        archivo.write("}")
+        archivo.close()
+        os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
+        os.system('dot -Tpng terreno1.dot -o salida.png')
+
         
     #def Valuar
     def recorrerFin(self):

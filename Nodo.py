@@ -1,6 +1,6 @@
 class Nodos:
     def __init__(self, Value,X,Y,Id):
-        self.Value=Value
+        self.Value=int(Value)
         self.Id=Id
         self.X=X
         self.Y=Y
@@ -23,6 +23,7 @@ class NodoTerreno:
         self.YInicio=Yinicio
         self.Yfinal=YFinal
         self.Analizado=False
+        self.combustible=int(0)
         self.Next=None
         self.Nodo1=None
 
