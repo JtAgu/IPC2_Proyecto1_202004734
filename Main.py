@@ -36,7 +36,7 @@ def Leer(ruta):
             Lista.AñadirPosiciones(x.attrib["nombre"],gas,equis,yes,c,x[0][1].text)
             c+=1
 
-    Lista.recorrer()
+    Lista.recorrer(x[0][1])
     return myroot
 
 def procesar(myroot):
@@ -55,25 +55,25 @@ def Xml(myroot):
 
 if __name__ == '__main__':    
     
-    opcion=0
+    opcion=""
     codigo=""
     arbol=""
     while opcion !=6:
         imprimir()
-        opcion=int(input())
-        if opcion==1:
+        opcion=input()
+        if opcion=="1":
             ruta =input("Ingresa la ruta del archivo:")
             arbol=Leer(ruta)
-        elif opcion==2:
+        elif opcion=="2":
             procesar(arbol)
-        elif opcion==3:
+        elif opcion=="3":
             Xml(arbol)
-        elif opcion==5:
-            n=input("Ingrese el nombre del terreno:\n")
-            Lista.Grafico(n)
-        elif opcion==4:
+        elif opcion=="5":
+            
+            Lista.Grafico()
+        elif opcion=="4":
             print("Justin Josue Aguirre Román\n202004734\nIntrucción a la Programación y Computación 2 sección A\nIngenieria en Ciencias y Systemas\n4to Semestre")
-        elif opcion==6:
+        elif opcion=="6":
             exit()
         else:
             print("ENTRADA INCORRECTA INGRESE UNA OPCION VALIDA")

@@ -44,7 +44,6 @@ class Listas:
             ActaulNodo.Next=NewNodo
             ActaulNodo.Sig=NewNodo
             NewNodo.Anterior=ActaulNodo
-            print(str(NewNodo.Anterior.Id)+" es anterior de "+str(NewNodo.Id))
             if NewNodo.Id==(int(DimX)+1):
 
                 ActaulNodo.Sig=None
@@ -71,15 +70,41 @@ class Listas:
         cadena+="]"
         return cadena
     
-    def recorrer(self):
+    def recorrer(self,Ydimension):
         aux=self.First
+        impresion=""
         while aux:
             print(aux.nombre)
             nodo=aux.Nodo1
             while nodo:
                 print(str(nodo.Id)+".\tgas:"+str(nodo.Value)+"  x:"+str(nodo.X)+"   y:"+str(nodo.Y))
                 nodo=nodo.Next
+            nodo=aux.Nodo1
+            print(" ")
+            print("Mapa de nodos para: "+aux.nombre)
+            """while nodo:
+                impresion+="["+str(nodo.Value)+"] "
+                if nodo.Id%int(aux.Ydimension)==0:
+                    impresion+="\n"
+                nodo=nodo.Next
+            """
+            nodo=aux.Nodo1
+            while nodo.Abajo:
+                impresion+="["+str(nodo.Value)+"] "
+                nodo=nodo.Abajo
+                cod=int(nodo.Y)
+                if nodo.X==aux.Xdimension:
+                    impresion+="["+str(nodo.Value)+"]\n"
+                    if nodo.Y<aux.Ydimension:
+                        nodo=aux.Nodo1
+                        while int(cod)>int(0):
+                            nodo=nodo.Next
+                            cod-=int(1)
+
+            print(impresion)
+            impresion=""
             print("--------------------------------------")
+            print(" ")
             aux=aux.Next
         
 
@@ -88,8 +113,7 @@ class Listas:
         while aux.nombre!=nombre:
             aux=aux.Next
         Actual=aux.Nodo1
-        print(aux.YInicio)
-        print(aux.Xinicio)
+
         aux.Analizado=True
         if Actual.X<aux.YInicio:
             while Actual.X!=aux.Xinicio or Actual.Y!=aux.YInicio:
@@ -105,7 +129,7 @@ class Listas:
                 while Actual.X!=aux.Xinicio or Actual.Y!=aux.YInicio:
                     Actual=Actual.Next
         #Recorrido de izquierda-Arriba hacia Abajo-Derecha
-        print("Empece en: "+ Actual.X+" - "+Actual.Y)
+        print("Posicion Inicio:\t"+ Actual.X+" - "+Actual.Y)
         Actual.Camino=True
         aux.combustible+=Actual.Value
         if Actual.Y<aux.Yfinal and (Actual.X<aux.Xfinal):
@@ -179,7 +203,6 @@ class Listas:
         #Recorrido de Derecha-Arriba hacia Izquierda-abajo
         elif (Actual.Y>aux.Yfinal) and (Actual.X<aux.Xfinal):
             while (Actual.Y!=aux.Yfinal) and (Actual.X!=aux.Xfinal):
-                print("Estoy en: "+ Actual.X+" - "+Actual.Y)
                 if Actual.Abajo.Value<=Actual.Anterior.Value:
                     Actual=Actual.Abajo
                     Actual.Camino=True
@@ -223,18 +246,29 @@ class Listas:
                     Actual.Camino=True
                     aux.combustible+=Actual.Value
         
-        print("Estoy en: "+ Actual.X+" - "+Actual.Y)
+        print("Posicion Final:\t"+ Actual.X+" - "+Actual.Y)
+        print("Mapa de la Ruta elegida para: "+aux.nombre)
         Actual=aux.Nodo1
         impresion=""
-        while Actual:
+        while Actual.Abajo:
             if Actual.Camino==True:
                 impresion+="[1] "
             else:
                 impresion+="[0] "
-            if Actual.Id%int(aux.Ydimension)==0:
-                impresion+="\n"
-            Actual=Actual.Next
+            Actual=Actual.Abajo
+            cod=int(Actual.Y)
+            if Actual.X==aux.Xdimension:
+                if Actual.Camino==True:
+                    impresion+="[1]\n"
+                else:
+                    impresion+="[0]\n"
+                if Actual.Y<aux.Ydimension:
+                    Actual=aux.Nodo1
+                    while int(cod)>int(0):
+                        Actual=Actual.Next
+                        cod-=int(1)
         print(impresion)
+        impresion=""
 
     def imprimirXML(self, nombre):
         aux=self.First
@@ -257,20 +291,31 @@ class Listas:
                     nodo1.text=str(Actual.Value)
                 Actual=Actual.Next
             arbol=ET.ElementTree(ruut)
-            ruta=input("Ingrese la ruta:")            
             try:
-                arbol.write(ruta)
+                arbol.write(aux.nombre+".xml")
+                print("ARCHIVO XML GENERADO")
             except IOError as exc:
                 print(exc)
+
         else:
             print("No ha seleccionado un terreno analizado...")
             
             
-    def Grafico(self,nombre):
+    def Grafico(self):
+        
+        cod=int(0)
+        aux=self.First
+        print("Elija una de los siguientes terrenos:")
+        while aux:
+            if aux.Analizado==True:
+                print("1."+aux.nombre)
+            aux=aux.Next
+        nombre=input("Ingrese el nombre del terreno:\n")
+
         aux=self.First
         while aux.nombre!=nombre:
             aux=aux.Next
-        archivo=open("C:/Users/justin/Desktop/USAC/Semestre 2 2021/IPC 2/Lab/IPC2_Proyecto1_202003734/IPC2_Proyecto1_202004734/"+aux.nombre+".dot","w")
+        archivo=open(aux.nombre+".dot","w")
         archivo.write("digraph "+aux.nombre+"{\n")
         Actual=aux.Nodo1
         while Actual:
@@ -279,10 +324,46 @@ class Listas:
             else:
                 archivo.write(str(Actual.Id)+"[label="+str(Actual.Value)+"]\n")
             Actual=Actual.Next
+        Actual=aux.Nodo1
+        """while Actual.Abajo!=None:
+            archivo.write(str(Actual.Id)+"->"+str(Actual.Abajo.Id)+"[arrowhead = none]\n")
+            #[arrowhead = none]
+            Actual=Actual.Abajo
+            cod=int(Actual.Y)
+            if Actual.X==aux.Xdimension and Actual.Y<aux.Ydimension:
+                Actual=aux.Nodo1
+                while int(cod)>int(0):
+                    Actual=Actual.Next
+                    cod-=int(1)
+        Actual=aux.Nodo1"""
+        while Actual.Abajo!=None:
+            archivo.write("rank = same{"+str(Actual.Id)+"->"+str(Actual.Abajo.Id)+"[arrowhead = none]}\n")
+            #[arrowhead = none]
+            Actual=Actual.Abajo
+            cod=int(Actual.Y)
+            if Actual.X==aux.Xdimension and Actual.Y<aux.Ydimension:
+                Actual=aux.Nodo1
+                while int(cod)>int(0):
+                    Actual=Actual.Next
+                    cod-=int(1)
+        Actual=aux.Nodo1
+        while Actual:
+            if Actual.Y<aux.Ydimension:
+                archivo.write(str(Actual.Id)+"->"+str(Actual.Next.Id)+"[arrowhead = none]\n")
+            Actual=Actual.Next
+        
+        """while Actual:
+            if Actual.Y<aux.Ydimension:
+                archivo.write("rank = same{"+str(Actual.Id)+"->"+str(Actual.Next.Id)+"[arrowhead = none]}\n")
+            Actual=Actual.Next
+        """         
+
+
         archivo.write("}")
         archivo.close()
         os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
-        os.system('dot -Tpng terreno1.dot -o salida.png')
+        os.system('dot -Tpng '+aux.nombre+'.dot -o '+aux.nombre+'.png')
+        print("Grafico generado :)")
 
         
     #def Valuar
