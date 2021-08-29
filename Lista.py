@@ -361,7 +361,7 @@ class Listas:
 
         archivo.write("}")
         archivo.close()
-        os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
+        #os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
         os.system('dot -Tpng '+aux.nombre+'.dot -o '+aux.nombre+'.png')
         print("Grafico generado :)")
 
