@@ -40,12 +40,23 @@ def Leer(ruta):
     return myroot
 
 def procesar(myroot):
+    aux=Lista.First
+    print("Lista de terrenos")
+    while aux:
+        print("1."+aux.nombre)
+        aux=aux.Next
     nombre=input("Escribe el nombre del terreno a procesar:\n")
     for x in myroot.findall('terreno'):
         if str(x.attrib["nombre"])==nombre:
             Lista.BuscarInicio(nombre)
 
 def Xml(myroot):
+    aux=Lista.First
+    print("Lista de terrenos procesados")
+    while aux:
+        if aux.Analizado:
+            print("1."+aux.nombre)
+        aux=aux.Next
     nombre=input("Escribe el nombre del terreno a procesar:\n")
     for x in myroot.findall('terreno'):
         if str(x.attrib["nombre"])==nombre:
